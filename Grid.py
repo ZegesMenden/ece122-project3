@@ -19,29 +19,85 @@ class Grid:
                 self.pixels = []
                 self.pixarr = np.zeros((cols, rows), dtype=int)
 
-        def random_pixels(self, npixels, color):
-                for i in range(npixels):
-                        self.addxy(np.random.randint(low=0, high=self.cols)*self.scale, np.random.randint(low=0, high=self.rows)*self.scale, color)
+        def reset(self):
+                for pix in self.pixels:
+                        pix.delete()
+                        del(pix)
 
-        def addxy(self, x, y, color=1):
-                i = int(x/self.scale)
-                j = int(y/self.scale)
+                for i in range(self.cols):
+                        for j in range(self.rows):
+                                if self.pixarr[i, j] != 0:
+                                        self.pixels.append(Pixel(self.canvas, i, j, self.rows, self.cols, self.scale, self.pixarr[i, j]))
+
+        def random_pixels(self, npixels, color):
+                if color > 0:
+                        for i in range(npixels):
+                                self.addij(np.random.randint(low=0, high=self.cols), np.random.randint(low=0, high=self.rows), color)
+
+        def addij(self, i, j, color=1):
                 if self.pixarr[i, j] == 0:
                         self.pixels.append(Pixel(self.canvas, i, j, self.rows, self.cols, self.scale, color))
-                        self.pixarr[i, j] = 1  
+                        self.pixarr[i, j] = color
                         self.canvas.update() 
 
-        def delxy(self, x, y):
+        def flush_row(self, i):
+                purple_pixels = [
+                        Pixel(self.canvas, 0, i, self.rows, self.cols, self.scale, 7, [0, 1]),
+                        Pixel(self.canvas, 1, i, self.rows, self.cols, self.scale, 7, [0, 1]),
+                        Pixel(self.canvas, 2, i, self.rows, self.cols, self.scale, 7, [0, 1]),
+                        Pixel(self.canvas, self.cols-1, i, self.rows, self.cols, self.scale, 7, [0, -1]),
+                        Pixel(self.canvas, self.cols-2, i, self.rows, self.cols, self.scale, 7, [0, -1]),
+                        Pixel(self.canvas, self.cols-3, i, self.rows, self.cols, self.scale, 7, [0, -1])                        
+                ]
+
+                n_iters = int((self.cols-6)/2)
+                self.canvas.update()
+
+                for _ in range(n_iters):
+                        for pix in purple_pixels:
+                                pix.next()
+                        self.canvas.update()
+                        time.sleep(0.02)
+
+                self.pixarr[:, 1:i+1] = self.pixarr[:, 0:i]
+                self.pixarr[:,0] = 0
+
+                for pix in purple_pixels:
+                        pix.delete()
+
+                self.reset()
+
+        def delij(self, i, j):
+                if self.pixarr[i, j] == 0:
+                        print("flushing")
+                        self.flush_row(j)
+                        return
+                
+                for pix in self.pixels:
+                        if pix.i == i and pix.j == j:
+                                # what it seems like you should write for this function, but for some reason not what they want??
+                                # for pix in self.pixels:
+                                #         if pix.i == i and pix.j == j:
+                                #                 self.pixels.remove(pix)
+                                #                 pix.delete()
+                                #                 self.pixarr[i, j] = 0 
+                                #                 break
+
+                                # what they want us to write, for some reason
+                                self.pixarr[i, j] = 0
+                                self.reset()             
+
+        def addxy(self, x, y):
+                print("addxy")
                 i = int(x/self.scale)
                 j = int(y/self.scale)
-                if self.pixarr[i, j] == 1:
-                        for pix in self.pixels:
-                                if pix.i == i and pix.j == j:
-                                        self.pixels.remove(pix)
-                                        pix.delete()
-                                        self.pixarr[i, j] = 0 
-                                        break
-                          
+                self.addij(i, j)
+
+        def delxy(self, x, y):
+                print("delxy")
+                i = int(x/self.scale)
+                j = int(y/self.scale)
+                self.delij(i, j)
 
 
 
