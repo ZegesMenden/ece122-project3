@@ -5,9 +5,6 @@ import random, time
 
 
 class Grid:
-    
-
-
 ### To complete
 
         def __init__(self, root, rows, cols, scale):
@@ -26,7 +23,7 @@ class Grid:
 
                 for i in range(self.cols):
                         for j in range(self.rows):
-                                if self.pixarr[i, j] != 0:
+                                if self.pixarr[i, j] > 0:
                                         self.pixels.append(Pixel(self.canvas, i, j, self.rows, self.cols, self.scale, self.pixarr[i, j]))
 
         def random_pixels(self, npixels, color):
@@ -35,7 +32,7 @@ class Grid:
                                 self.addij(np.random.randint(low=0, high=self.cols), np.random.randint(low=0, high=self.rows), color)
 
         def addij(self, i, j, color=1):
-                if self.pixarr[i, j] == 0:
+                if self.pixarr[i, j] <= 0:
                         self.pixels.append(Pixel(self.canvas, i, j, self.rows, self.cols, self.scale, color))
                         self.pixarr[i, j] = color
                         self.canvas.update() 
@@ -88,9 +85,9 @@ class Grid:
                                 self.reset()             
 
         def addxy(self, x, y):
-                print("addxy")
                 i = int(x/self.scale)
                 j = int(y/self.scale)
+                print(f"insert {x} {y} {i} {j} {self.pixarr[i,j]}")
                 self.addij(i, j)
 
         def delxy(self, x, y):

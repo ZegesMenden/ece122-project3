@@ -22,9 +22,9 @@ class Pixel:
         return f"[{self.i}, {self.j}] {Pixel.color[self.color]}"
 
     def next(self):
-        self.i+=self.vector[0]
-        self.j+=self.vector[1]
-        self.canvas.move(self.canvas_obj, self.vector[1]*self.size, self.vector[0]*self.size)
+        self.i = (self.i + self.vector[1]) % self.cols
+        self.j = (self.j + self.vector[0]) % self.rows
+        self.canvas.coords(self.canvas_obj, self.i*self.size, self.j*self.size, self.i*self.size+self.size, self.j*self.size+self.size)
 
     def up(self):
         self.vector[0] = -1
@@ -37,7 +37,6 @@ class Pixel:
     
     def right(self):
         self.vector[1] = 1
-    
 
     def delete(self):
         self.canvas.delete(self.canvas_obj)
