@@ -9,34 +9,34 @@ class Pixel:
 
     def __init__(self, canvas, i, j, rows, cols, size, color_px, vector=[0,0]):
         self.canvas = canvas
-        self.i = i % cols
-        self.j = j % rows
+        self.i = i % rows
+        self.j = j % cols
         self.rows = rows
         self.cols = cols
         self.size = size
         self.color = color_px
         self.vector = vector
-        self.canvas_obj = self.canvas.create_rectangle(self.i*self.size, self.j*self.size, self.i*self.size+self.size, self.j*self.size+self.size, fill=Pixel.color[self.color])
+        self.canvas_obj = self.canvas.create_rectangle(self.j*self.size, self.i*self.size, self.j*self.size+self.size, self.i*self.size+self.size, fill=Pixel.color[self.color])
 
     def __str__(self):
         return f"[{self.i}, {self.j}] {Pixel.color[self.color]}"
 
     def next(self):
-        self.i = (self.i + self.vector[1]) % self.cols
-        self.j = (self.j + self.vector[0]) % self.rows
-        self.canvas.coords(self.canvas_obj, self.i*self.size, self.j*self.size, self.i*self.size+self.size, self.j*self.size+self.size)
+        self.i = (self.i + self.vector[0]) % self.rows
+        self.j = (self.j + self.vector[1]) % self.cols
+        self.canvas.coords(self.canvas_obj, self.j*self.size, self.i*self.size, self.j*self.size+self.size, self.i*self.size+self.size)
 
     def up(self):
-        self.vector[0] = -1
+        self.vector = [-1, 0]
     
     def down(self):
-        self.vector[0] = 1
+        self.vector = [1, 0]
     
     def left(self):
-        self.vector[1] = -1
+        self.vector = [0, -1]
     
     def right(self):
-        self.vector[1] = 1
+        self.vector = [0, 1]
 
     def delete(self):
         self.canvas.delete(self.canvas_obj)

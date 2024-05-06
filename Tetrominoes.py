@@ -10,10 +10,85 @@ class Tetrominoes:
     ## to complete
 
 
+    def __init__(self, canvas, rows, cols, scale, color = 2, patterns = [np.array([[2, 2, 2],[2, 0, 2],[2, 2, 2]])]):
 
+        self.canavs = canvas
+        self.rows = rows
+        self.cols = cols
+        self.scale = scale
+        self.color = color
+        self.patterns = patterns
+        self.pattern_idx = 0
+        self.nbpattern = len(patterns)
+        self.w, self.h = patterns[self.pattern_idx].shape
+        self.name = "Basic"
 
+        self.i = 0
+        self.j = 0
+    
+        self.pixels = []
 
+    def activate(self, i = 0, j = None):
+        if j is None:
+            j = np.random.randint(0, self.cols - self.w)
 
+        self.i = i
+        self.j = j
+
+        self.clear_pixels()
+
+        for x in range(self.w):
+            for y in range(self.h):
+                if self.patterns[self.pattern_idx][x, y] > 0:
+                    self.pixels.append(
+                        Pixel(self.canavs, self.i + x, self.j + y, self.rows, self.cols, self.scale, self.color)
+                    )
+
+    def get_pattern(self):
+        return self.patterns[self.pattern_idx]
+        
+    def clear_pixels(self):
+        for pix in self.pixels:
+            pix.delete()
+            del(pix)
+
+    def rotate(self):
+        self.pattern_idx = (self.pattern_idx + 1) % self.nbpattern
+        self.clear_pixels()
+        self.activate(self.i, self.j)
+
+    def delete(self):
+        self.clear_pixels()
+
+    def up(self):
+        self.i = (self.i - 1) % self.rows
+        
+        for pix in self.pixels:
+            pix.up()
+            pix.next()
+    
+    def down(self):
+        self.i = (self.i + 1) % self.rows
+        
+        for pix in self.pixels:
+            pix.down()
+            pix.next()
+    
+    def left(self):
+        self.j = (self.j - 1) % self.cols
+        
+        for pix in self.pixels:
+            pix.left()
+            pix.next()
+    
+    def right(self):
+        self.j = (self.j + 1) % self.cols
+        
+        for pix in self.pixels:
+            pix.right()
+            pix.next()
+    
+    
 
     @staticmethod
     def random_select(canv,nrow,ncol,scale):
@@ -26,18 +101,101 @@ class Tetrominoes:
         t7=Pencil(canv,nrow,ncol,scale)        
         return random.choice([t1,t2,t3,t4,t5,t6,t7,t7]) #a bit more change to obtain a pencil shape
         
-
-
 #########################################################
 ############# All Child Classes #########################
 #########################################################
 
+class TShape(Tetrominoes):
+    def __init__(self, canvas, rows, cols, scale):
+        super().__init__(canvas, rows, cols, scale, 3, [np.array([[0, 1, 0],
+                                                        [0, 1, 0,],
+                                                        [1, 1, 1]]),
+                                                        np.array([[0, 0, 1,],
+                                                        [1, 1, 1,],
+                                                        [0, 0, 1,]]),
+                                                        np.array([[1, 1, 1,],
+                                                        [0, 1, 0,],
+                                                        [0, 1, 0,]]),
+                                                        np.array([[1, 0, 0,],
+                                                        [1, 1, 1,],
+                                                        [1, 0, 0,]])])
+        self.name="TShape"
+
+class TripodA(Tetrominoes):
+    def __init__(self, canvas, rows, cols, scale):
+        super().__init__(canvas, rows, cols, scale, 4, [np.array([[0, 1, 0],
+                                                        [0, 1, 0],
+                                                        [1, 0, 1]]),
+                                                        np.array([[0, 0, 1],
+                                                        [1, 1, 0],
+                                                        [0, 0, 1]]),
+                                                        np.array([[1, 0, 1],
+                                                        [0, 1, 0],
+                                                        [0, 1, 0]]),
+                                                        np.array([[1, 0, 0],
+                                                        [0, 1, 1],
+                                                        [1, 0, 0]])])
+        self.name="TripodA"
 
 
-    ## to complete
+class TripodB(Tetrominoes):
+    def __init__(self, canvas, rows, cols, scale):
+            super().__init__(canvas, rows, cols, scale, 5, [np.array([[0, 1, 0],
+                                                            [1, 0, 1],
+                                                            [1, 0, 1]]),
+                                                            np.array([[0, 1, 1],
+                                                            [1, 0, 0],
+                                                            [0, 1, 1]]),
+                                                            np.array([[1, 0, 1],
+                                                            [1, 0, 1],
+                                                            [0, 1, 0]]),
+                                                            np.array([[1, 1, 0],
+                                                            [0, 0, 1],
+                                                            [1, 1, 0]])])
+            self.name="TripodB"
 
+class SnakeA(Tetrominoes):
+    def __init__(self, canvas, rows, cols, scale):
+            super().__init__(canvas, rows, cols, scale, 6, [np.array([[1, 1, 0],
+                                                            [0, 1, 0],
+                                                            [0, 1, 1]]),
+                                                            np.array([[0, 0, 1],
+                                                            [1, 1, 1],
+                                                            [1, 0, 0]])])
+            self.name="SnakeA"
 
+class SnakeB(Tetrominoes):
+    def __init__(self, canvas, rows, cols, scale):
+            super().__init__(canvas, rows, cols, scale, 7, [np.array([[0, 1, 1],
+                                                            [0, 1, 0],
+                                                            [1, 1, 0]]),
+                                                            np.array([[1, 0, 0],
+                                                            [1, 1, 1],
+                                                            [0, 0, 1]])])
+            self.name="SnakeB"
 
+class Cube(Tetrominoes):
+    def __init__(self, canvas, rows, cols, scale):
+            super().__init__(canvas, rows, cols, scale, 8, [np.array([[1, 1, 1],
+                                                            [1, 1, 1],
+                                                            [1, 1, 1]]),
+                                                            np.array([[1, 1, 1],
+                                                            [1, 1, 1],
+                                                            [1, 1, 1]]),
+                                                            np.array([[1, 1, 1],
+                                                            [1, 1, 1],
+                                                            [1, 1, 1]])])
+            self.name="Cube"
+
+class Pencil(Tetrominoes):
+    def __init__(self, canvas, rows, cols, scale):
+            super().__init__(canvas, rows, cols, scale, 9, [np.array([[0, 1, 0],
+                                                            [0, 1, 0],
+                                                            [0, 1, 0]]),
+                                                            np.array([[0, 0, 0],
+                                                            [1, 1, 1],
+                                                            [0, 0, 0]])])
+            self.name="Pencil"
 
 #########################################################
 ############# Testing Functions #########################

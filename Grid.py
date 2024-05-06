@@ -14,22 +14,22 @@ class Grid:
                 self.cols = cols
                 self.scale = scale
                 self.pixels = []
-                self.pixarr = np.zeros((cols, rows), dtype=int)
+                self.pixarr = np.zeros((rows, cols), dtype=int)
 
         def reset(self):
                 for pix in self.pixels:
                         pix.delete()
                         del(pix)
 
-                for i in range(self.cols):
-                        for j in range(self.rows):
+                for i in range(self.rows):
+                        for j in range(self.cols):
                                 if self.pixarr[i, j] > 0:
                                         self.pixels.append(Pixel(self.canvas, i, j, self.rows, self.cols, self.scale, self.pixarr[i, j]))
 
         def random_pixels(self, npixels, color):
                 if color > 0:
                         for i in range(npixels):
-                                self.addij(np.random.randint(low=0, high=self.cols), np.random.randint(low=0, high=self.rows), color)
+                                self.addij(np.random.randint(low=0, high=self.rows), np.random.randint(low=0, high=self.cols), color)
 
         def addij(self, i, j, color=1):
                 if self.pixarr[i, j] <= 0:
@@ -39,12 +39,12 @@ class Grid:
 
         def flush_row(self, i):
                 purple_pixels = [
-                        Pixel(self.canvas, 0, i, self.rows, self.cols, self.scale, 7, [0, 1]),
-                        Pixel(self.canvas, 1, i, self.rows, self.cols, self.scale, 7, [0, 1]),
-                        Pixel(self.canvas, 2, i, self.rows, self.cols, self.scale, 7, [0, 1]),
-                        Pixel(self.canvas, self.cols-1, i, self.rows, self.cols, self.scale, 7, [0, -1]),
-                        Pixel(self.canvas, self.cols-2, i, self.rows, self.cols, self.scale, 7, [0, -1]),
-                        Pixel(self.canvas, self.cols-3, i, self.rows, self.cols, self.scale, 7, [0, -1])                        
+                        Pixel(self.canvas, i, 0, self.rows, self.cols, self.scale, 7, [0, 1]),
+                        Pixel(self.canvas, i, 1, self.rows, self.cols, self.scale, 7, [0, 1]),
+                        Pixel(self.canvas, i, 2, self.rows, self.cols, self.scale, 7, [0, 1]),
+                        Pixel(self.canvas, i, self.cols-1, self.rows, self.cols, self.scale, 7, [0, -1]),
+                        Pixel(self.canvas, i, self.cols-2, self.rows, self.cols, self.scale, 7, [0, -1]),
+                        Pixel(self.canvas, i, self.cols-3, self.rows, self.cols, self.scale, 7, [0, -1])                        
                 ]
 
                 n_iters = int((self.cols-6)/2)
@@ -56,8 +56,8 @@ class Grid:
                         self.canvas.update()
                         time.sleep(0.02)
 
-                self.pixarr[:, 1:i+1] = self.pixarr[:, 0:i]
-                self.pixarr[:,0] = 0
+                self.pixarr[1:i+1] = self.pixarr[0:i]
+                self.pixarr[0,:] = 0
 
                 for pix in purple_pixels:
                         pix.delete()
@@ -67,7 +67,7 @@ class Grid:
         def delij(self, i, j):
                 if self.pixarr[i, j] == 0:
                         print("flushing")
-                        self.flush_row(j)
+                        self.flush_row(i)
                         return
                 
                 for pix in self.pixels:
@@ -85,15 +85,15 @@ class Grid:
                                 self.reset()             
 
         def addxy(self, x, y):
-                i = int(x/self.scale)
-                j = int(y/self.scale)
+                j = int(x/self.scale)
+                i = int(y/self.scale)
                 print(f"insert {x} {y} {i} {j} {self.pixarr[i,j]}")
                 self.addij(i, j)
 
         def delxy(self, x, y):
                 print("delxy")
-                i = int(x/self.scale)
-                j = int(y/self.scale)
+                j = int(x/self.scale)
+                i = int(y/self.scale)
                 self.delij(i, j)
 
 
