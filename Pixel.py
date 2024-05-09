@@ -2,12 +2,20 @@ from tkinter import *
 import time
 import random
 
+# written by: 
+# cameron kullberg - 34231062
+# spencer little 
+
 class Pixel:
     color=['black','white','yellow','red','blue','green','orange','purple','brown','cyan']
     
     ### to complete       
 
     def __init__(self, canvas, i, j, rows, cols, size, color_px, vector=[0,0]):
+        """Pixel - instantiate pixel class
+        inputs - canvas: canvas object, i: i coordinate, j: j coordinate, rows: number of rows, cols: number of cols, size: size of pixel, color_px, color of pixel, vector: pixel direction vector
+        outputs - none
+        """
         self.canvas = canvas
         self.i = i % rows
         self.j = j % cols
@@ -19,26 +27,54 @@ class Pixel:
         self.canvas_obj = self.canvas.create_rectangle(self.j*self.size, self.i*self.size, self.j*self.size+self.size, self.i*self.size+self.size, fill=Pixel.color[self.color])
 
     def __str__(self):
+        """__str__ - returns string representation of the pixel
+        inputs - none
+        outputs - string representation
+        """
         return f"[{self.i}, {self.j}] {Pixel.color[self.color]}"
 
     def next(self):
+        """next - iterates the pixel one step forward
+        inputs - none
+        outputs - none
+        """
         self.i = (self.i + self.vector[0]) % self.rows
         self.j = (self.j + self.vector[1]) % self.cols
         self.canvas.coords(self.canvas_obj, self.j*self.size, self.i*self.size, self.j*self.size+self.size, self.i*self.size+self.size)
 
     def up(self):
+        """up - sets the pixels direction to up
+        inputs - none
+        outputs - none
+        """
         self.vector = [-1, 0]
     
     def down(self):
+        """down - sets the pixels direction to down
+        inputs - none
+        outputs - none
+        """
         self.vector = [1, 0]
     
     def left(self):
+        """left - sets the pixels direction to left
+        inputs - none
+        outputs - none
+        """
         self.vector = [0, -1]
     
     def right(self):
+        """right - sets the pixels direction to right
+        inputs - none
+        outputs - none
+        """
         self.vector = [0, 1]
 
     def delete(self):
+        """delete - deletes pixel from the display
+        inputs - none
+        outputs - none
+        """
         self.canvas.delete(self.canvas_obj)
 
         

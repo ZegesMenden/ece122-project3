@@ -3,7 +3,9 @@ from Pixel import Pixel
 import time, random
 import numpy as np
 
-
+# written by: 
+# cameron kullberg - 34231062
+# spencer little 
 
 class Tetrominoes:
 
@@ -11,7 +13,10 @@ class Tetrominoes:
 
 
     def __init__(self, canvas, rows, cols, scale, color = 2, patterns = [np.array([[2, 2, 2],[2, 0, 2],[2, 2, 2]])]):
-
+        """Tetrominoes - class representing one tetrominoe
+        inputs - canvas: canvas for tetrominoe to go on, rows: number of rows, cols: number of columns, scale: scale of each row and column, color: color of tetrominoe, patterns: list of tetrominoe rotations 
+        returns - none
+        """
         self.canavs = canvas
         self.rows = rows
         self.cols = cols
@@ -29,6 +34,10 @@ class Tetrominoes:
         self.pixels = []
 
     def activate(self, i = 0, j = None):
+        """activate - activates the tetrominoe
+        inputs - i: i coordinate, j: j coordinate
+        returns - none
+        """
         if j is None:
             j = np.random.randint(0, self.cols - self.w)
 
@@ -45,22 +54,42 @@ class Tetrominoes:
                     )
 
     def get_pattern(self):
+        """get_pattern - returns current pattern of tetrominoe
+        inputs - none
+        returns - current pattern
+        """
         return np.copy(self.patterns[self.pattern_idx])
         
     def clear_pixels(self):
+        """clear_pixels - clears every pixel in the tetrominoe
+        inputs - none
+        returns - none
+        """
         for pix in self.pixels:
             pix.delete()
             del(pix)
 
     def rotate(self):
+        """rotate - rotates the tetrominoe once
+        inputs - none
+        returns - none
+        """
         self.pattern_idx = (self.pattern_idx + 1) % self.nbpattern
         self.clear_pixels()
         self.activate(self.i, self.j)
 
     def delete(self):
+        """delete - deletes the pixels in the tetrominoe
+        inputs - none
+        returns - none
+        """
         self.clear_pixels()
 
     def up(self):
+        """up - moves the tetrominoe up
+        inputs - none
+        returns - none
+        """
         self.i = (self.i - 1) % self.rows
         
         for pix in self.pixels:
@@ -68,6 +97,10 @@ class Tetrominoes:
             pix.next()
     
     def down(self):
+        """down - moves the tetrominoe down
+        inputs - none
+        returns - none
+        """
         self.i = (self.i + 1) % self.rows
         
         for pix in self.pixels:
@@ -75,15 +108,22 @@ class Tetrominoes:
             pix.next()
     
     def left(self):
+        """left - moves the tetrominoe left
+        inputs - none
+        returns - none
+        """
         self.j -= 1
-        # self.j = (self.j - 1) % self.cols
         
         for pix in self.pixels:
             pix.left()
             pix.next()
     
     def right(self):
-        self.j = (self.j + 1) % self.cols
+        """right - moves the tetrominoe right
+        inputs - none
+        returns - none
+        """
+        self.j = self.j + 1
         
         for pix in self.pixels:
             pix.right()

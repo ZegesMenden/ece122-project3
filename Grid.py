@@ -3,11 +3,18 @@ from Pixel import Pixel
 import numpy as np
 import random, time
 
+# written by: 
+# cameron kullberg - 34231062
+# spencer little 
 
 class Grid:
 ### To complete
 
         def __init__(self, root, rows, cols, scale):
+                """name - 
+                inputs - 
+                outputs - 
+                """
                 self.canvas = Canvas(root,width=cols*scale,height=rows*scale,bg="black")
                 self.canvas.pack()
                 self.rows = rows
@@ -25,7 +32,10 @@ class Grid:
                         self.canvas.create_line(0, (j+1)*self.scale, self.scale*self.cols, (j+1)*self.scale, fill='white')
 
         def reset(self):
-
+                """reset - resets every pixel to the values set in pixarr
+                inputs - none
+                outputs - none
+                """
                 # delete every pixel
                 for pix in self.pixels:
                         pix.delete()
@@ -38,6 +48,10 @@ class Grid:
                                         self.pixels.append(Pixel(self.canvas, i, j, self.rows, self.cols, self.scale, self.pixarr[i, j]))
 
         def random_pixels(self, npixels, color):
+                """random_pixels - fills the screen with random pixels
+                inputs - npixels: number of pixels, color: color of the pixels
+                outputs - none
+                """
                 # dont do anything if the pixels are black
                 if color == 0:
                         return
@@ -46,12 +60,20 @@ class Grid:
                         self.addij(np.random.randint(low=0, high=self.rows), np.random.randint(low=0, high=self.cols), color)
 
         def addij(self, i, j, color=1):
+                """addij - add a pixel at i j cordinates
+                inputs - i: i coordinate, j: j coordinate, color: color of pixel
+                outputs - none
+                """
                 if self.pixarr[i, j] <= 0:
                         self.pixels.append(Pixel(self.canvas, i, j, self.rows, self.cols, self.scale, color))
                         self.pixarr[i, j] = color
                         self.canvas.update() 
 
         def flush_row(self, i):
+                """flush_row - removes every pixel in a row
+                inputs - i: row to remove
+                outputs - none
+                """
                 purple_pixels = [
                         Pixel(self.canvas, i, 0, self.rows, self.cols, self.scale, 7, [0, 1]),
                         Pixel(self.canvas, i, 1, self.rows, self.cols, self.scale, 7, [0, 1]),
@@ -79,6 +101,10 @@ class Grid:
                 self.reset()
 
         def delij(self, i, j):
+                """delij - deletes a pixel at the given coordinates, if no pixel exists, the row is cleared
+                inputs - i: i coordinate of pixel, j: j coordinate of pixel
+                outputs - none
+                """
                 if self.pixarr[i, j] == 0:
                         print("flushing")
                         self.flush_row(i)
@@ -90,12 +116,20 @@ class Grid:
                                 self.reset()             
 
         def addxy(self, x, y):
+                """addxy - adds a pixel at the given coordinates
+                inputs - x: x coordinate of pixel, y: y coordinate of pixel
+                outputs - none
+                """
                 j = int(x/self.scale)
                 i = int(y/self.scale)
                 print(f"insert {x} {y} {i} {j} {self.pixarr[i,j]}")
                 self.addij(i, j)
 
         def delxy(self, x, y):
+                """delxy - deletes a pixel at the given coordinates
+                inputs - x: x coordinate of pixel, y: y coordinate of pixel
+                outputs - none
+                """
                 j = int(x/self.scale)
                 i = int(y/self.scale)
                 print(f"delete {x} {y} {i} {j} {self.pixarr[i,j]}")

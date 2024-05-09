@@ -4,6 +4,9 @@ from Tetrominoes import Tetrominoes
 import numpy as np
 import time
 
+# written by: 
+# cameron kullberg - 34231062
+# spencer little 
         
 ### complete class Tetris
 
@@ -16,6 +19,10 @@ import time
 class Tetris(Grid):
      
     def __init__(self, canvas, rows, cols, scale):
+        """name - 
+        inputs - 
+        outputs - 
+        """
         super().__init__(canvas, rows, cols, scale)
         self.block = None
         self.__gameover = False
@@ -24,6 +31,10 @@ class Tetris(Grid):
         self.next_is_running = False
     
     def overlapping(self, ii, jj):
+        """overlapping - returns true if the current block is overlapping the given coordinate
+        inputs - i and j coordinates to test
+        outputs - true if there is an overlap
+        """
 
         # check every pixel by iterating through
         for x in range(self.block.w):
@@ -36,6 +47,10 @@ class Tetris(Grid):
         return False
 
     def next(self):
+        """next - iterate the game one step forward in the simulation
+        inputs - none
+        outputs - none
+        """
 
         self.next_is_running = True
 
@@ -48,7 +63,7 @@ class Tetris(Grid):
         self.block.down()
 
         # check if the block is at the ground level, only if there are pixels on the bottom row (only applies to line piece)
-        collision_with_ground = self.block.i > (self.rows - (self.block.h*2) + (np.count_nonzero(self.block.get_pattern()[2,:]) == 0))
+        collision_with_ground = self.block.i > (self.rows - (self.block.h+1) + (np.count_nonzero(self.block.get_pattern()[2,:]) == 0))
 
         if collision_with_ground or self.overlapping(self.block.i+1, self.block.j):
 
@@ -76,46 +91,83 @@ class Tetris(Grid):
         self.next_is_running = False
 
     def is_game_over(self):
+        """is_game_over - check if game is over
+        inputs - none
+        outputs - true if game is over
+        """
         return self.__gameover
 
     def is_pause(self):
+        """is_pause - check if game is paused
+        inputs - none
+        outputs - true if game is paused
+        """
         return self.__paused
 
     def pause(self):
+        """pause - pauses the game
+        inputs - none
+        outputs - none
+        """
+        print("pause")
         self.__paused = not self.__paused
 
     def up(self):
+        """up - rotates the current block
+        inputs - none
+        outputs - none
+        """
+
+        if self.next_is_running:
+            return
 
         # rotate forward, then check for a collision
         self.block.rotate()
 
         # check if the block is at the ground level, only if there are pixels on the bottom row (only applies to line piece)
-        collision_with_ground = self.block.i > (self.rows - (self.block.h*2) + (np.count_nonzero(self.block.get_pattern()[2,:]) == 0))
+        collision_with_ground = self.block.i > (self.rows - (self.block.h+1) + (np.count_nonzero(self.block.get_pattern()[2,:]) == 0))
 
         pixels_overflow = (self.block.j + (np.count_nonzero(self.block.get_pattern()[:,0]) == 0)) < 0 or (self.block.j - (np.count_nonzero(self.block.get_pattern()[:,2]) == 0)) > self.cols-3
 
         if self.overlapping(self.block.i, self.block.j) or collision_with_ground or pixels_overflow:
-            self.block.pattern_idx = max(self.block.pattern_idx - 1, 0)
+            self.block.pattern_idx = (self.block.pattern_idx + (self.block.nbpattern-1)) % self.block.nbpattern
             self.block.clear_pixels()
             self.block.activate(self.block.i, self.block.j)
 
     def right(self):
+        """right - moves the current block right
+        inputs - none
+        outputs - none
+        """
+
+        if self.next_is_running:
+            return
 
         # check if the block is at the ground level, only if there are pixels on the bottom row (only applies to line piece)
-        collision_with_ground = self.block.i > (self.rows - (self.block.h*2) + (np.count_nonzero(self.block.get_pattern()[2,:]) == 0))
+        collision_with_ground = self.block.i > (self.rows - (self.block.h+1) + (np.count_nonzero(self.block.get_pattern()[2,:]) == 0))
 
         if (self.block.j - (np.count_nonzero(self.block.get_pattern()[:,2]) == 0)) < self.cols-self.block.w and not self.overlapping(self.block.i, self.block.j+1) and not collision_with_ground:
             self.block.right()
     
-    def left(self):    
-          
+    def left(self):
+        """left - moves the current block left
+        inputs - none
+        outputs - none
+        """    
+        
+        if self.next_is_running:
+            return
         # check if the block is at the ground level, only if there are pixels on the bottom row (only applies to line piece)
-        collision_with_ground = self.block.i > (self.rows - (self.block.h*2) + (np.count_nonzero(self.block.get_pattern()[2,:]) == 0))
+        collision_with_ground = self.block.i > (self.rows - (self.block.h+1) + (np.count_nonzero(self.block.get_pattern()[2,:]) == 0))
 
         if (self.block.j + (np.count_nonzero(self.block.get_pattern()[:,0]) == 0)) > 0 and not self.overlapping(self.block.i, self.block.j-1) and not collision_with_ground:
             self.block.left()
 
     def down(self):
+        """down - moves the current block to the lowest possible position
+        inputs - none
+        outputs - none
+        """
 
         # check to see if the "next" function is currently being run in the main loop of the program so that we don't accidentally delete the block
         # object in the middle of executing code that references it
