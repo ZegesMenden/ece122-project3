@@ -45,7 +45,7 @@ class Tetrominoes:
                     )
 
     def get_pattern(self):
-        return self.patterns[self.pattern_idx]
+        return np.copy(self.patterns[self.pattern_idx])
         
     def clear_pixels(self):
         for pix in self.pixels:
@@ -75,7 +75,8 @@ class Tetrominoes:
             pix.next()
     
     def left(self):
-        self.j = (self.j - 1) % self.cols
+        self.j -= 1
+        # self.j = (self.j - 1) % self.cols
         
         for pix in self.pixels:
             pix.left()
@@ -87,8 +88,6 @@ class Tetrominoes:
         for pix in self.pixels:
             pix.right()
             pix.next()
-    
-    
 
     @staticmethod
     def random_select(canv,nrow,ncol,scale):

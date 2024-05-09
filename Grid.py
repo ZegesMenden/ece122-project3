@@ -16,20 +16,34 @@ class Grid:
                 self.pixels = []
                 self.pixarr = np.zeros((rows, cols), dtype=int)
 
+                # create the vertical lines of the grid
+                for i in range(self.cols - 1):
+                        self.canvas.create_line((i+1)*self.scale, 0, (i+1)*self.scale, self.scale*self.rows, fill='white')
+                
+                # create the horizontal lines of the grid
+                for j in range(self.rows - 1):
+                        self.canvas.create_line(0, (j+1)*self.scale, self.scale*self.cols, (j+1)*self.scale, fill='white')
+
         def reset(self):
+
+                # delete every pixel
                 for pix in self.pixels:
                         pix.delete()
                         del(pix)
 
+                # recreate the pixels
                 for i in range(self.rows):
                         for j in range(self.cols):
                                 if self.pixarr[i, j] > 0:
                                         self.pixels.append(Pixel(self.canvas, i, j, self.rows, self.cols, self.scale, self.pixarr[i, j]))
 
         def random_pixels(self, npixels, color):
-                if color > 0:
-                        for i in range(npixels):
-                                self.addij(np.random.randint(low=0, high=self.rows), np.random.randint(low=0, high=self.cols), color)
+                # dont do anything if the pixels are black
+                if color == 0:
+                        return
+
+                for i in range(npixels):
+                        self.addij(np.random.randint(low=0, high=self.rows), np.random.randint(low=0, high=self.cols), color)
 
         def addij(self, i, j, color=1):
                 if self.pixarr[i, j] <= 0:
@@ -72,15 +86,6 @@ class Grid:
                 
                 for pix in self.pixels:
                         if pix.i == i and pix.j == j:
-                                # what it seems like you should write for this function, but for some reason not what they want??
-                                # for pix in self.pixels:
-                                #         if pix.i == i and pix.j == j:
-                                #                 self.pixels.remove(pix)
-                                #                 pix.delete()
-                                #                 self.pixarr[i, j] = 0 
-                                #                 break
-
-                                # what they want us to write, for some reason
                                 self.pixarr[i, j] = 0
                                 self.reset()             
 
@@ -91,9 +96,9 @@ class Grid:
                 self.addij(i, j)
 
         def delxy(self, x, y):
-                print("delxy")
                 j = int(x/self.scale)
                 i = int(y/self.scale)
+                print(f"delete {x} {y} {i} {j} {self.pixarr[i,j]}")
                 self.delij(i, j)
 
 

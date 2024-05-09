@@ -41,25 +41,6 @@ class Pixel:
     def delete(self):
         self.canvas.delete(self.canvas_obj)
 
-     
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         
 #################################################################
 ########## TESTING FUNCTION

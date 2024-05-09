@@ -78,9 +78,7 @@ class Snake(Grid):
             
         if self.pixarr[self.snake_pixels[-1].i, self.snake_pixels[-1].j] == 1:
             self.__game_over = True
-
-            # change this to display on the screen instead of print
-            print("GAME OVER")
+            self.canvas.create_text(int(self.cols*self.scale/2), int(self.rows*self.scale/2), fill='yellow', text="*** GAME OVER ***", font=('Times', 25))
         
         if self.pixarr[self.snake_pixels[-1].i, self.snake_pixels[-1].j] == 3:
             self.fruits_eaten += 1
@@ -90,6 +88,7 @@ class Snake(Grid):
 
         if self.n_fruits == 0:
             self.__game_over = True
+            self.canvas.create_text(int(self.cols*self.scale/2), int(self.rows*self.scale/2), fill='yellow', text="*** You Won ***", font=('Times', 25))
   
 def main(): 
         
